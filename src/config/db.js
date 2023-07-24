@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
 const uri = process.env.MONGODB_URI;
@@ -29,23 +29,23 @@ async function connect() {
 }
 connect();
 
-const getColleges = () => {
-  const result = colleges.find({}).toArray();
+const getColleges = async () => {
+  const result = await colleges.find({}).toArray();
 
   return result;
 };
-const getCollegeById = (id) => {
-  const result = colleges.findOne({ _id: id });
+const getCollegeById = async (id) => {
+  const result = await colleges.findOne({ _id: new ObjectId(id) });
   return result;
 };
 
-const getReviews = () => {
-  const result = reviews.find({}).toArray();
+const getReviews = async () => {
+  const result = await reviews.find({}).toArray();
 
   return result;
 };
-const addReviews = (userReview) => {
-  const result = reviews.insertOne(userReview).toArray();
+const addReviews = async (userReview) => {
+  const result = await reviews.insertOne(userReview);
 
   return result;
 };

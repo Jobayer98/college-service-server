@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const {
   getColleges,
   getCollegeById,
@@ -11,6 +12,8 @@ const port = process.env.PORT || 3001;
 
 // express middleware
 app.use(express.json());
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 
 // connect to the database collection
 app.get("/", (req, res) => {
@@ -78,14 +81,19 @@ app.post("/reviews", async (req, res) => {
 
   try {
     const result = await addReviews(userReview);
-    console.log(result);
 
-    if (result.inse)
-      res.status(201).send({
-        status: true,
-        message: "Review added successfully",
+    if (!result.insertedId)
+      return res.status(400).send({
+        status: false,
+        message: "Review not added",
       });
-  } catch (error) {}
+    res.status(201).send({
+      status: true,
+      message: "Review added successfully",
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.listen(port, () => {
